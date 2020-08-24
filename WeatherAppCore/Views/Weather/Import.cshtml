@@ -1,0 +1,29 @@
+﻿@model WeatherAppCore.Models.WeatherData
+
+
+<h4>WeatherData</h4>
+<h2>Basic File Upload</h2>
+@using (Html.BeginForm("Import",
+                       "Weather",
+                       FormMethod.Post,
+                       new { enctype = "multipart/form-data" }))
+{
+    <label for="file">Upload Excel:</label>
+    <input type="file" name="file" id="file" />
+    <br>
+    <br>
+
+    <input type="submit" value="Upload ..." />
+
+    <br>
+    <br>
+
+    @ViewBag.Message
+}
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

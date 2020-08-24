@@ -1,0 +1,89 @@
+﻿@model WeatherAppCore.Models.WeatherData
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>WeatherData</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Time" class="control-label"></label>
+                <input asp-for="Time" class="form-control" />
+                <span asp-validation-for="Time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="T" class="control-label"></label>
+                <input asp-for="T" class="form-control" />
+                @*<span asp-validation-for="T" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <label asp-for="Humidity" class="control-label"></label>
+                <input asp-for="Humidity" class="form-control" />
+                <span asp-validation-for="Humidity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Td" class="control-label"></label>
+                <input asp-for="Td" class="form-control" />
+                @*<span asp-validation-for="Td" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <label asp-for="Pressure" class="control-label"></label>
+                <input asp-for="Pressure" class="form-control" />
+                <span asp-validation-for="Pressure" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Direction" class="control-label"></label>
+                <input asp-for="Direction" class="form-control" />
+                <span asp-validation-for="Direction" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Speed" class="control-label"></label>
+                <input asp-for="Speed" class="form-control" />
+                <span asp-validation-for="Speed" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cloudiness" class="control-label"></label>
+                <input asp-for="Cloudiness" class="form-control" />
+                <span asp-validation-for="Cloudiness" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="h" class="control-label"></label>
+                <input asp-for="h" class="form-control" />
+                <span asp-validation-for="h" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VV" class="control-label"></label>
+                <input asp-for="VV" class="form-control" />
+                <span asp-validation-for="VV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comment" class="control-label"></label>
+                <input asp-for="Comment" class="form-control" />
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

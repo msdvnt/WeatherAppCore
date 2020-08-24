@@ -1,0 +1,148 @@
+﻿@model IPagedList<WeatherAppCore.Models.WeatherData>
+
+@{
+    //ViewData["Title"] = "Index";
+    ViewBag.Title = "Index";
+}
+
+<h2>Погода в Москве. Архив.</h2>
+
+<p>
+    <a asp-action="Create">Внести показания</a>
+    <a asp-action="Import">Импорт базы наблюдений(Excel)</a>
+</p>
+@*@using (Html.BeginForm("Index", "Weather", FormMethod.Get))
+{
+    <p>
+        Поиск по конкретной дате: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Поиск" />
+    </p>
+}*@
+<form asp-action="Index" method="get">
+    <div class="form-inline no-color">
+        <p>
+            Введите год: <input class="form-control small" type="text" name="SearchString0" value="@ViewBag.CurrentFilter0" />
+            Введите месяц: <input class="form-control small" type="text" name="SearchString1" value="@ViewBag.CurrentFilter1" />
+            <input type="submit" value="Фильтровать" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Дата", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+
+            </th>
+            <th>
+                Время
+            </th>
+            <th>
+                @Html.ActionLink("Температура", "Index", new { sortOrder = ViewBag.T, currentFilter = ViewBag.CurrentFilter })
+
+            </th>
+            <th>
+                Влажность
+            </th>
+            <th>
+                Точка росы
+            </th>
+            <th>
+                Давление
+            </th>
+            <th>
+                Напрвление ветра
+            </th>
+            <th>
+                Скорость ветра
+            </th>
+            <th>
+                Облачность
+            </th>
+            <th>
+                Высота
+            </th>
+            <th>
+                Видимость
+            </th>
+            <th>
+                Погода
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Time)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.T)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Humidity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Td)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pressure)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Speed)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cloudiness)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.h)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VV)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Comment)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="pull-right">
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index",
+       new
+       {
+           page,
+           search = Context.Request.Query["search"]
+       }),
+     new PagedListRenderOptions
+     {
+         LiElementClasses = new string[] { "page-item" },
+         PageClasses = new string[] { "page-link" },
+         //Display = PagedListDisplayMode.IfNeeded
+
+     })
+</div>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+<pager class="pager-container" list="@Model" options="@PagedListRenderOptions.TwitterBootstrapPager" asp-action="Index" asp-controller="ControllerName" />
