@@ -21,8 +21,8 @@
 <form asp-action="Index" method="get">
     <div class="form-inline no-color">
         <p>
-            Введите год: <input class="form-control small" type="text" name="SearchString0" value="@ViewBag.CurrentFilter0" />
-            Введите месяц: <input class="form-control small" type="text" name="SearchString1" value="@ViewBag.CurrentFilter1" />
+            Введите год: <input asp-controller="SearchString0" class="form-control small" type="text" name="SearchString0" value="@ViewBag.CurrentFilter0" /> |
+            Введите месяц: <input asp-controller="SearchString1" class="form-control small" type="text" name="SearchString1" value="@ViewBag.CurrentFilter1" />
             <input type="submit" value="Фильтровать" class="btn btn-default" /> |
             <a asp-action="Index">Back to Full List</a>
         </p>
@@ -32,36 +32,50 @@
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Дата", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+                page,
+                @Html.ActionLink("Дата", "Index", new
+                   {
+                       sortOrder = ViewBag.DateSortParm,
+                       currentFilter = ViewBag.CurrentFilter,
+                       page = Context.Request.Query["page"],
+                       searchString0 = Context.Request.Query["SearchString0"],
+                       searchString1 = Context.Request.Query["SearchString1"]
+                   })
 
             </th>
             <th>
                 Время
             </th>
             <th>
-                @Html.ActionLink("Температура", "Index", new { sortOrder = ViewBag.T, currentFilter = ViewBag.CurrentFilter })
+                @Html.ActionLink("Температура", "Index", new
+                   {
+                       sortOrder = ViewBag.T, currentFilter = ViewBag.CurrentFilter,
+                       page = Context.Request.Query["page"],
+                       searchString0 = Context.Request.Query["SearchString0"],
+                       searchString1 = Context.Request.Query["SearchString1"]
+                   })
 
             </th>
             <th>
                 Влажность
             </th>
             <th>
-                Точка росы
+                Точка<br>росы
             </th>
             <th>
                 Давление
             </th>
             <th>
-                Напрвление ветра
+                Напрвление<br>ветра
             </th>
             <th>
-                Скорость ветра
+                Скорость<br>ветра
             </th>
             <th>
                 Облачность
             </th>
             <th>
-                Высота
+                Высота<br>облаков
             </th>
             <th>
                 Видимость
@@ -113,8 +127,8 @@
                     @Html.DisplayFor(modelItem => item.Comment)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <br>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> <br>
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
@@ -132,13 +146,15 @@
        new
        {
            page,
-           search = Context.Request.Query["search"]
+           sortOrder = Context.Request.Query["sortOrder"],
+           searchString0 = Context.Request.Query["SearchString0"],
+           searchString1 = Context.Request.Query["SearchString1"]
        }),
      new PagedListRenderOptions
      {
          LiElementClasses = new string[] { "page-item" },
          PageClasses = new string[] { "page-link" },
-         //Display = PagedListDisplayMode.IfNeeded
+         Display = X.PagedList.Web.Common.PagedListDisplayMode.IfNeeded
 
      })
 </div>

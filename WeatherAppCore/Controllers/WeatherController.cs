@@ -88,8 +88,8 @@ namespace WeatherAppCore.Controllers
         public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page, string searchString0, string searchString1)
         {
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "T" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "Date" : "date_desc";
+            ViewBag.NameSortParm = sortOrder == "T" ? "-T" : "T";//String.IsNullOrEmpty(sortOrder) ? 
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.CurrentFilter0 = !String.IsNullOrWhiteSpace(searchString0) ? searchString0 : "";
             ViewBag.CurrentFilter1 = !String.IsNullOrWhiteSpace(searchString1) ? searchString1 : "";
 
@@ -122,6 +122,9 @@ namespace WeatherAppCore.Controllers
             switch (sortOrder)
             {
                 case "T":
+                    weather = weather.OrderBy(s => s.T);
+                    break;
+                case "-T":
                     weather = weather.OrderByDescending(s => s.T);
                     break;
                 case "Date":
@@ -130,7 +133,7 @@ namespace WeatherAppCore.Controllers
                 case "date_desc":
                     weather = weather.OrderByDescending(s => s.Date);
                     break;
-                default:  // Name ascending 
+                default:  // id ascending 
                     weather = weather.OrderBy(s => s.Id);
                     break;
             }
