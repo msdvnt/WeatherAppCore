@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DevExpress.Data.Linq.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -240,7 +241,11 @@ namespace WeatherAppCore.Controllers
                             //weatherData1.Date = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).DateCellValue;
 
                         }
-                        weatherData.Add(weatherData1);
+                        //проверка на пустые записи и наличие в базе
+                        if (DateTime.MinValue >= weatherData1.Date || _context.WeatherData.Where(x =>
+                                (x.Date == weatherData1.Date) && (x.Time == weatherData1.Time)).Count() > 0) ;
+                        else
+                            weatherData.Add(weatherData1);
                     }
                 }
             }

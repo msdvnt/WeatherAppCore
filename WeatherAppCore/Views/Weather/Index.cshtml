@@ -21,8 +21,8 @@
 <form asp-action="Index" method="get">
     <div class="form-inline no-color">
         <p>
-            Введите год: <input asp-controller="SearchString0" class="form-control small" type="text" name="SearchString0" value="@ViewBag.CurrentFilter0" /> |
-            Введите месяц: <input asp-controller="SearchString1" class="form-control small" type="text" name="SearchString1" value="@ViewBag.CurrentFilter1" />
+            Введите год: <input asp-controller="SearchString0" type="month" class="form-control small" type="text" name="SearchString0" value="@ViewBag.CurrentFilter0" /> |
+            Введите месяц: <input asp-controller="SearchString1" type="month" class="form-control small" type="text" name="SearchString1" value="@ViewBag.CurrentFilter1" />
             <input type="submit" value="Фильтровать" class="btn btn-default" /> |
             <a asp-action="Index">Back to Full List</a>
         </p>
