@@ -196,64 +196,78 @@ namespace WeatherAppCore.Controllers
         public async Task<IActionResult> Import([Bind("Id,Date,Time,T,Humidity,Td,Pressure,Direction,Speed,Cloudiness,h,VV,Comment")] List<WeatherData> ListweatherData)
         {
             List<WeatherData> weatherData = new List<WeatherData>();
-            foreach (var file in Request.Form.Files)
+            try
             {
-                XSSFWorkbook xSSFWorkbook = new XSSFWorkbook(
-                    file.OpenReadStream()
-                );
-                for(int s = 0; s < xSSFWorkbook.NumberOfSheets; s++)
+                foreach (var file in Request.Form.Files)
                 {
-                    for (int r = 4; r < xSSFWorkbook.GetSheetAt(s).LastRowNum; r++)
-                    {
-                        WeatherData weatherData1 = new WeatherData() { 
-                            //Date = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(0).DateCellValue,
-                            //Time = TimeSpan.Parse(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(1).StringCellValue),
-                            //T = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(2).NumericCellValue,
-                            //Humidity = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(3).NumericCellValue,
-                            //Td = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(4).NumericCellValue,
-                            //Pressure = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(5).NumericCellValue,
-                            //Direction = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(6).StringCellValue,
-                            //Speed = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(7).NumericCellValue,
-                            //Cloudiness = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(8).NumericCellValue,
-                            //h = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(9).NumericCellValue,
-                            //VV = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).NumericCellValue,
-                            //Comment = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(11).StringCellValue
-                        };
-                        if(xSSFWorkbook.GetSheetAt(s).GetRow(r).LastCellNum == 12)
-                        {
-                            weatherData1.Date = DateTime.Parse(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(0).StringCellValue);
-                            weatherData1.Time = TimeSpan.Parse(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(1).StringCellValue);
-                            weatherData1.T = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(2).NumericCellValue;
-                            weatherData1.Humidity = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(3).NumericCellValue;
-                            weatherData1.Td = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(4).NumericCellValue;
-                            weatherData1.Pressure = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(5).NumericCellValue;
-                            weatherData1.Direction = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(6).StringCellValue;
-                            if(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(7).CellType != NPOI.SS.UserModel.CellType.String)
-                                weatherData1.Speed = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(7).NumericCellValue;
-                            if(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(8).CellType != NPOI.SS.UserModel.CellType.String)
-                                weatherData1.Cloudiness = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(8).NumericCellValue;
-                            if(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(9).CellType != NPOI.SS.UserModel.CellType.String)
-                                weatherData1.h = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(9).NumericCellValue;
-                            if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).CellType != NPOI.SS.UserModel.CellType.String)
-                                weatherData1.VV = (int)(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).NumericCellValue);
-                            if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(11) != null)
-                                weatherData1.Comment = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(11).StringCellValue;
-                            //weatherData1.Date = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).DateCellValue;
+                    XSSFWorkbook xSSFWorkbook = new XSSFWorkbook(
+                        file.OpenReadStream()
+                    );
+                    if (xSSFWorkbook.NumberOfSheets < 12) throw new Exception("Невалидная книга" + file.Name.ToString());
 
+                    for (int s = 0; s < xSSFWorkbook.NumberOfSheets; s++)
+                    {
+                        if (xSSFWorkbook.GetSheetAt(s).LastRowNum < 4) throw new Exception("Невалидная страница "+ s.ToString());
+                        for (int r = 4; r < xSSFWorkbook.GetSheetAt(s).LastRowNum; r++)
+                        {
+                            WeatherData weatherData1 = new WeatherData()
+                            {
+                                //Date = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(0).DateCellValue,
+                                //Time = TimeSpan.Parse(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(1).StringCellValue),
+                                //T = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(2).NumericCellValue,
+                                //Humidity = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(3).NumericCellValue,
+                                //Td = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(4).NumericCellValue,
+                                //Pressure = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(5).NumericCellValue,
+                                //Direction = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(6).StringCellValue,
+                                //Speed = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(7).NumericCellValue,
+                                //Cloudiness = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(8).NumericCellValue,
+                                //h = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(9).NumericCellValue,
+                                //VV = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).NumericCellValue,
+                                //Comment = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(11).StringCellValue
+                            };
+                            if (xSSFWorkbook.GetSheetAt(s).GetRow(r).LastCellNum == 12)
+                            {
+                                weatherData1.Date = DateTime.Parse(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(0).StringCellValue);
+                                weatherData1.Time = TimeSpan.Parse(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(1).StringCellValue);
+                                weatherData1.T = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(2).NumericCellValue;
+                                weatherData1.Humidity = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(3).NumericCellValue;
+                                weatherData1.Td = (decimal)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(4).NumericCellValue;
+                                weatherData1.Pressure = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(5).NumericCellValue;
+                                weatherData1.Direction = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(6).StringCellValue;
+                                if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(7).CellType != NPOI.SS.UserModel.CellType.String)
+                                    weatherData1.Speed = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(7).NumericCellValue;
+                                if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(8).CellType != NPOI.SS.UserModel.CellType.String)
+                                    weatherData1.Cloudiness = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(8).NumericCellValue;
+                                if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(9).CellType != NPOI.SS.UserModel.CellType.String)
+                                    weatherData1.h = (int)xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(9).NumericCellValue;
+                                if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).CellType != NPOI.SS.UserModel.CellType.String)
+                                    weatherData1.VV = (int)(xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).NumericCellValue);
+                                if (xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(11) != null)
+                                    weatherData1.Comment = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(11).StringCellValue;
+                                //weatherData1.Date = xSSFWorkbook.GetSheetAt(s).GetRow(r).GetCell(10).DateCellValue;
+
+                            }
+                            //проверка на пустые записи и наличие в базе
+                            if (DateTime.MinValue >= weatherData1.Date || _context.WeatherData.Where(x =>
+                                    (x.Date == weatherData1.Date) && (x.Time == weatherData1.Time)).Count() > 0) ;
+                            else
+                                weatherData.Add(weatherData1);
                         }
-                        //проверка на пустые записи и наличие в базе
-                        if (DateTime.MinValue >= weatherData1.Date || _context.WeatherData.Where(x =>
-                                (x.Date == weatherData1.Date) && (x.Time == weatherData1.Time)).Count() > 0) ;
-                        else
-                            weatherData.Add(weatherData1);
                     }
                 }
+                if (ModelState.IsValid)
+                {
+                    _context.AddRange(weatherData);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            if (ModelState.IsValid)
+            catch(Exception e) 
             {
-                _context.AddRange(weatherData);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = e.ToString();
+                //errorViewModel.ShowRequestId = true;
+                return View("~/Views/Shared/Error.cshtml",errorViewModel); 
             }
             return View(weatherData);
         }
